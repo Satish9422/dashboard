@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region ap-south-1)
+  build:
+    commands:
+      - docker build -t youtube:latest .
+      - docker tag youtube:latest 898847366693.dkr.ecr.ap-south-1.amazonaws.com/youtube:latest
+  post_build:
+    commands:
+      - docker push 898847366693.dkr.ecr.ap-south-1.amazonaws.com/youtube:latest
+      - printf '[{"name":"node","imageUri":"898847366693.dkr.ecr.ap-south-1.amazonaws.com/youtube:latest"}]' > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
